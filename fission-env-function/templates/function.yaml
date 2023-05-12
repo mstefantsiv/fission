@@ -1,17 +1,43 @@
 apiVersion: fission.io/v1
+kind: Environment
+metadata:
+  name: python
+spec:
+  builder:
+    command: build
+    container:
+      name: ""
+      resources: {}
+    image: fission/python-builder:latest
+  imagepullsecret: ""
+  keeparchive: false
+  poolsize: 3
+  resources: {}
+  runtime:
+    container:
+      name: ""
+      resources: {}
+    image: fission/python-env
+  version: 2
+
+---
+apiVersion: fission.io/v1
 kind: Package
 metadata:
-  name: env-func-py-package-literal
+  name: env-func-py-package-archive
 spec:
-  source:
-    literalSource: |
-      print("Hello, world!")
+  deployment:
+    checksum: {}
+    type: url
+    url: file://hello.py
   environment:
     name: python
     namespace: ""
+  source:
+    checksum: {}
 status:
   buildstatus: none
-  lastUpdateTimestamp: "2023-04-23T08:49:52Z"
+  lastUpdateTimestamp: "2023-04-13T07:30:56Z"
 
 ---
 apiVersion: fission.io/v1
@@ -19,11 +45,6 @@ kind: Function
 metadata:
   name: env-func
 spec:
-  environment:
-    namespace: fission
-    name: python
-    env:
-      OUTPUT_VALUE: value1
   InvokeStrategy:
     ExecutionStrategy:
       ExecutorType: poolmgr
@@ -32,7 +53,16 @@ spec:
       SpecializationTimeout: 120
       TargetCPUPercent: 0
     StrategyType: execution
+  concurrency: 500
+  environment:
+    name: python
+    namespace: ""
+  functionTimeout: 60
+  idletimeout: 120
   package:
     packageref:
-      name: env-func-py-package-literal
+      name: env-func-py-package-archive
       namespace: ""
+  requestsPerPod: 1
+  resources: {}
+
