@@ -1,0 +1,38 @@
+apiVersion: fission.io/v1
+kind: Package
+metadata:
+  name: env-func-py-package-literal
+spec:
+  source:
+    literalSource: |
+      print("Hello, world!")
+  environment:
+    name: python
+    namespace: ""
+status:
+  buildstatus: none
+  lastUpdateTimestamp: "2023-04-23T08:49:52Z"
+
+---
+apiVersion: fission.io/v1
+kind: Function
+metadata:
+  name: env-func
+spec:
+  environment:
+    namespace: fission
+    name: python
+    env:
+      OUTPUT_VALUE: value1
+  InvokeStrategy:
+    ExecutionStrategy:
+      ExecutorType: poolmgr
+      MaxScale: 0
+      MinScale: 0
+      SpecializationTimeout: 120
+      TargetCPUPercent: 0
+    StrategyType: execution
+  package:
+    packageref:
+      name: env-func-py-package-literal
+      namespace: ""
