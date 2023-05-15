@@ -1,4 +1,3 @@
----
 apiVersion: fission.io/v1
 kind: DeploymentConfig
 name: fission
@@ -69,3 +68,27 @@ spec:
       namespace: ""
   requestsPerPod: 1
   resources: {}
+---
+apiVersion: fission.io/v1
+kind: HTTPTrigger
+metadata:
+  creationTimestamp: null
+  name: env-trigger
+  namespace: default
+spec:
+  createingress: false
+  functionref:
+    functionweights: null
+    name: env-func-git
+    type: name
+  host: ""
+  ingressconfig:
+    annotations: null
+    host: '*'
+    path: /env
+    tls: ""
+  method: ""
+  methods:
+  - GET
+  prefix: ""
+  relativeurl: /env
