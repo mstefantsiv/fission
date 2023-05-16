@@ -1,6 +1,6 @@
 import boto3 as boto
 
-def get_file_content_from_s3(bucket_name, file_key):
+def main():
     """
     Retrieves a file from Amazon S3 and returns its content.
 
@@ -23,7 +23,7 @@ def get_file_content_from_s3(bucket_name, file_key):
     # # Read the content of the file
     # content = response['Body'].read().decode('utf-8')
 
-    return
+    return s3.meta.endpoint_url
 
 
 # if __name__ == '__main__':
