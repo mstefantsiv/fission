@@ -25,7 +25,7 @@ spec:
     container:
       name: ""
       resources: {}
-    image: fission/python-builder:latest
+    image: my-python-env:latest
   imagepullsecret: ""
   keeparchive: false
   poolsize: 3
