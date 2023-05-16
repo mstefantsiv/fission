@@ -17,19 +17,19 @@ def get_file_content_from_s3(bucket_name, file_key):
     # Create an S3 client
     s3 = boto.client('s3', endpoint_url=endpoint_url)
 
-    # Retrieve the file object
-    response = s3.get_object(Bucket=bucket_name, Key=file_key)
+    # # Retrieve the file object
+    # response = s3.get_object(Bucket=bucket_name, Key=file_key)
+    #
+    # # Read the content of the file
+    # content = response['Body'].read().decode('utf-8')
 
-    # Read the content of the file
-    content = response['Body'].read().decode('utf-8')
-
-    return content
+    return
 
 
-if __name__ == '__main__':
-    bucket_name = 'your_bucket_name'
-    file_key = 'path/to/your_file.txt'
-
-    file_content = get_file_content_from_s3(bucket_name, file_key)
-
-    print(file_content)
+# if __name__ == '__main__':
+#     bucket_name = 'your_bucket_name'
+#     file_key = 'path/to/your_file.txt'
+#
+#     file_content = get_file_content_from_s3(bucket_name, file_key)
+#
+#     print(file_content)
