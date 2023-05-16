@@ -1,9 +1,4 @@
 apiVersion: fission.io/v1
-kind: DeploymentConfig
-name: fission
-uid: helm-fission
----
-apiVersion: fission.io/v1
 kind: Package
 metadata:
   name: hello-pkg-git
@@ -72,7 +67,6 @@ spec:
 apiVersion: fission.io/v1
 kind: HTTPTrigger
 metadata:
-  creationTimestamp: null
   name: env-trigger
   namespace: default
 spec:

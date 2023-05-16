@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: test-secrets
+  namespace: fission
+data:
+  AWS_ACCESS_KEY_ID: YXBpVmVyc2lvbjogdjEKa2luZDogU2VjcmV0Cm1ldGFkYXRhOgogIG5hbWU6IHRlc3Qtc2VjcmV0cwogIG5hbWVzcGFjZTogZGVmYXVsdApkYXRhOgogIEFXU19BQ0NFU1NfS0VZX0lEOiA8YmFzZTY0LWVuY29kZWQta2V5PgogIEFXU19TRUNSRVRfQUNDRVNTX0tFWTogPGJhc2U2NC1lbmNvZGVkLXNlY3JldC1rZXk+
+  AWS_SECRET_ACCESS_KEY: YXBpVmVyc2lvbjogdjEKa2luZDogU2VjcmV0Cm1ldGFkYXRhOgogIG5hbWU6IHRlc3Qtc2VjcmV0cwogIG5hbWVzcGFjZTogZGVmYXVsdApkYXRhOgogIEFXU19BQ0NFU1NfS0VZX0lEOiA8YmFzZTY0LWVuY29kZWQta2V5PgogIEFXU19TRUNSRVRfQUNDRVNTX0tFWTogPGJhc2U2NC1lbmNvZGVkLXNlY3JldC1rZXk+
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: keda-trigger-auth-aws-credentials
+  namespace: fission
+spec:
+  secretTargetRef:
+  - parameter: awsAccessKeyID     # Required.
+    name: test-secrets            # Required.
+    key: AWS_ACCESS_KEY_ID        # Required.
+  - parameter: awsSecretAccessKey # Required.
+    name: test-secrets            # Required.
+    key: AWS_SECRET_ACCESS_KEY    # Required.
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqs-deployment
+  namespace: fission
+  labels:
+    keda: sqs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      keda: sqs
+  template:
+    metadata:
+      labels:
+        keda: sqs
+    spec:
+      containers:
+        - name: keda-sqs-connector
+          image: fission/keda-aws-sqs-http-connector:latest
+          env:
+            - name: TOPIC
+              value: local-sqs-targeting
+            - name: HTTP_ENDPOINT
+              value: http://localhost:8888/envpost
+            - name: ERROR_TOPIC
+              value: errortopic
+            - name: RESPONSE_TOPIC
+              value: restopic
+            - name: CONTENT_TYPE
+              value: application/json
+            - name: MAX_RETRIES
+              value: "3"
+            - name: AWS_SQS_URL
+              value: http://localhost:4566/000000000000/local-sqs-targeting
+            - name: AWS_REGION
+              value: us-east-1
+            - name: AWS_ENDPOINT
+              value: http://localhost:4566
+              #helps to resolve credentials error for keda
+            - name: AWS_ACCESS_KEY_ID
+              value: foo
+            - name: AWS_SECRET_ACCESS_KEY
+              value: bar
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: sqs-scaledobject
+  labels:
+    keda: sqs
+  namespace: fission
+spec:
+  scaleTargetRef:
+    name: sqs-deployment
+  pollingInterval: 30
+  triggers:
+  - type: aws-sqs-queue
+    authenticationRef:
+      name: keda-trigger-auth-aws-credentials
+    metadata:
+      # Required: queueURL
+      queueURL: http://localhost:4566/000000000000/local-sqs-targeting
+      queueLength: "5"  # Default: "5"
+      # Required: awsRegion
+      awsRegion: "us-east-1"
+      identityOwner: pod # Optional. Default: pod
