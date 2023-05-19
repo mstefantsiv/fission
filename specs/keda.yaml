@@ -1,0 +1,16 @@
+apiVersion: fission.io/v1
+kind: MessageQueueTrigger
+metadata:
+  name: sqstest
+spec:
+  functionReference:
+    name: python-env
+    type: name
+    namespace: fission
+  messageQueueType: aws-sqs-queue
+  topic: input
+  responseTopic: restopic
+  errorTopic: errortopic
+  metadata:
+    - name: queueURL
+      value: http://localhost:4566/000000000000/local-sqs-targeting
