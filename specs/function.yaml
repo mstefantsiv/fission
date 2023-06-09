@@ -6,7 +6,7 @@ spec:
   deployment:
     checksum: { }
     type: url
-    url: https://raw.githubusercontent.com/mstefantsiv/fission/main/specs/hello.py
+    url: https://raw.githubusercontent.com/mstefantsiv/fission/fisson_dev/specs/hello.py
   environment:
     name: python
     namespace: ""
