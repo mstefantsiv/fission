@@ -1,3 +1,3 @@
 
-def main(context):
+def main():
     return "HI!"
