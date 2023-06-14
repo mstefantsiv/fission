@@ -1,4 +1,6 @@
-import requests as req
+from flask import requests
 
 def main():
-    return str(request.get_json())
+    current_app.logger.info("Received request")
+    msg = "--BODY--\n%s\n-----\n" % (request.get_data())
+    return msg
