@@ -1,2 +1,4 @@
+import requests as req
+
 def main():
-    return "Hello, world!\n"
+    return str(request.get_json())
