@@ -1,3 +1,3 @@
 
-def main(event):
+def main(event, self):
     return "HI!"
