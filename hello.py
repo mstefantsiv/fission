@@ -36,8 +36,8 @@ def wait_and_process_sqs_message(sqs_client):
 
     # Check if a message was received
     if 'Messages' in response:
-        message = response['Messages'][0]
-        receipt_handle = message['ReceiptHandle']
+        message = response['Records'][0]
+        receipt_handle = message['receiptHandle']
 
         # Process the message
         if process_sqs_message(message):
