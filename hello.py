@@ -16,7 +16,7 @@ def process_sqs_message(message):
 def delete_sqs_message(sqs_client, receipt_handle):
     # Delete the message
     response = sqs_client.delete_message(
-        QueueUrl='YOUR_SQS_QUEUE_URL',
+        QueueUrl='https://sqs.us-east-2.amazonaws.com/825155998022/q_trigger',
         ReceiptHandle=receipt_handle
     )
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
@@ -28,7 +28,7 @@ def delete_sqs_message(sqs_client, receipt_handle):
 def wait_and_process_sqs_message(sqs_client):
     # Receive a message from the SQS queue
     response = sqs_client.receive_message(
-        QueueUrl='YOUR_SQS_QUEUE_URL',
+        QueueUrl='https://sqs.us-east-2.amazonaws.com/825155998022/q_trigger',
         AttributeNames=['All'],
         MaxNumberOfMessages=1,
         WaitTimeSeconds=20
@@ -53,9 +53,9 @@ def wait_and_process_sqs_message(sqs_client):
 def main():
     sqs_client = boto.client(
         'sqs',
-        region_name='YOUR_AWS_REGION',
+        region_name='us-east-2',
         aws_access_key_id='AKIA4AHZBKFDNIFTTL5P',
-        aws_secret_access_key='us-east-2'
+        aws_secret_access_key='OTXR4MQBFLYrpFgFsu5Ou5pvbU2lfoj4f38I79gv'
     )
     wait_and_process_sqs_message(sqs_client)
     return "HI!"
