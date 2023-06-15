@@ -16,7 +16,7 @@ def process_sqs_message(message):
 def lock_sqs_message(sqs_client, receipt_handle, visibility_timeout):
     # Change the visibility timeout of the message to lock it
     response = sqs_client.change_message_visibility(
-        QueueUrl='YOUR_SQS_QUEUE_URL',
+        QueueUrl='https://sqs.us-east-2.amazonaws.com/825155998022/q_trigger',
         ReceiptHandle=receipt_handle,
         VisibilityTimeout=visibility_timeout
     )
