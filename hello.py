@@ -13,12 +13,26 @@ def process_sqs_message(message):
     return True
 
 
+def lock_sqs_message(sqs_client, receipt_handle, visibility_timeout):
+    # Change the visibility timeout of the message to lock it
+    response = sqs_client.change_message_visibility(
+        QueueUrl='YOUR_SQS_QUEUE_URL',
+        ReceiptHandle=receipt_handle,
+        VisibilityTimeout=visibility_timeout
+    )
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        logging.info("Message locked successfully")
+    else:
+        logging.error("Failed to lock message")
+
+
 def delete_sqs_message(sqs_client, receipt_handle):
     # Delete the message
     response = sqs_client.delete_message(
         QueueUrl='https://sqs.us-east-2.amazonaws.com/825155998022/q_trigger',
         ReceiptHandle=receipt_handle
     )
+
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
         logging.info("Message deleted successfully")
     else:
@@ -42,7 +56,7 @@ def wait_and_process_sqs_message(sqs_client):
         # Process the message
         if process_sqs_message(message):
             # Delete the message if processing is successful
-            delete_sqs_message(receipt_handle)
+            lock_sqs_message(sqs_client, receipt_handle, 5)
         else:
             logging.error("Failed to process message")
 
